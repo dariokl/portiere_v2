@@ -4,10 +4,11 @@
   >
     <VaCardContent
       title="Create new Account"
-      class="h-48 flex justify-center items-center"
+      class="h-48 flex flex-col justify-center items-center"
       @click="showModal = !showModal"
     >
       <VaIcon name="add_circle" size="68px" color="primary" />
+      <span>Add new Account</span>
     </VaCardContent>
 
     <AccountModalForm v-model="showModal" />

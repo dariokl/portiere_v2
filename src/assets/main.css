@@ -6,7 +6,11 @@
 @tailwind components;
 @tailwind utilities;
 
-:root,
+:root {
+  --va-data-table-grid-tr-border: 1px solid red;
+  --va-data-table-grid-tr-header-color: red;
+}
+
 :host {
   --va-font-family: 'Poppins', sans-serif !important;
 }

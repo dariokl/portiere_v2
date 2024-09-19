@@ -14,9 +14,11 @@
     </VaCardTitle>
     <VaCardContent>
       <span class="block mt-2 font-bold">{{ totalBalance }}</span>
-      <span class="block flex gap-1 text-xs"
-        >+12% <VaIcon name="trending_up" color="primary"
-      /></span>
+      <span class="block flex items-center gap-1 text-xs text-emerald-600"
+        >+12%
+
+        <VaIcon name="trending_up" color="primary" />
+      </span>
     </VaCardContent>
   </VaCard>
 </template>
@@ -53,8 +55,3 @@ watchEffect(() => {
   }
 })
 </script>
-<style>
-.va-input-wrapper__append-inner i {
-  color: white !important;
-}
-</style>
