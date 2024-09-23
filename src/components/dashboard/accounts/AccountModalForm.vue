@@ -3,7 +3,7 @@
     <template #header>
       <div class="flex items-center gap-4">
         <VaIcon name="account_balance_wallet" color="primary" />
-        <span> Add new Account </span>
+        <span> {{ account ? 'Edit' : 'Add' }} Account </span>
       </div>
     </template>
     <VaDivider />
@@ -52,6 +52,7 @@
           v-model="form.currency"
           :options="store.currencies"
           :rules="[(v) => Boolean(v) || 'Account Currency is required']"
+          :highlight-matched-text="false"
           placeholder="Select one..."
           label="Account Currency"
           searchable
@@ -61,6 +62,7 @@
           v-model="form.type"
           :options="['Bank', 'Card', 'Cash', 'Savings']"
           :rules="[(v) => Boolean(v) || 'Account Type is required']"
+          :highlight-matched-text="false"
           label="Account Type"
           placeholder="Select one..."
           class="w-1/2"
@@ -105,11 +107,13 @@ const form = reactive({
 })
 
 watchEffect(() => {
-  form.name = props?.account?.name
-  form.number = props?.account?.number
-  form.balance = props?.account?.balance
-  form.currency = props?.account?.currency
-  form.type = props?.account?.type
+  if (props.account) {
+    form.name = props.account.name || ''
+    form.number = props.account.number || ''
+    form.balance = props.account.balance || ''
+    form.currency = props.account.currency || ''
+    form.type = props.account.type || ''
+  }
 })
 
 const submit = () => {

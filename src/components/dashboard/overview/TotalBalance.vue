@@ -25,32 +25,30 @@
 
 <script setup>
 import { computed, ref, watchEffect } from 'vue'
-import { useObservable } from '@vueuse/rxjs'
-import { useTotalBalanceCalculation, useBalanceToCurrency } from '@/composables/useCurrency'
-import { db } from '@/db'
-import { liveQuery } from 'dexie'
-
 import { useCurrencyRates } from '@/stores/currencyRates'
-
+import { useTotalBalanceCalculation, useBalanceToCurrency } from '@/composables/useCurrency'
 import HoverableIcon from '../../HoverableIcon.vue'
 
-const currency = ref(null)
+const { accounts } = defineProps({
+  accounts: {
+    type: Array,
+    default: () => []
+  }
+})
+
+const currency = ref('EUR')
 
 const store = useCurrencyRates()
 
-const accounts = useObservable(liveQuery(() => db.accounts.toArray()))
+const currencies = computed(() => accounts.map((account) => account.currency) || [])
 
-const currencies = computed(() => accounts?.value?.map((account) => account.currency) || [])
-
-const totalBalance = computed(() =>
-  useBalanceToCurrency(
-    currency.value ?? 'EUR',
-    useTotalBalanceCalculation(accounts, store.rates, currency.value)
-  )
-)
+const totalBalance = computed(() => {
+  const balance = useTotalBalanceCalculation(accounts, store.rates, currency.value)
+  return useBalanceToCurrency(currency.value, balance)
+})
 
 watchEffect(() => {
-  if (currencies.value.length) {
+  if (currencies.value.length && !currencies.value.includes(currency.value)) {
     currency.value = currencies.value[0]
   }
 })

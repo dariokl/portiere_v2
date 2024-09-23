@@ -5,9 +5,9 @@ export const useBalanceToCurrency = (currency, value) =>
   }).format(parseFloat(value))
 
 export const useTotalBalanceCalculation = (accounts, rates, currency) => {
-  if (!accounts?.value || !rates || !currency) return '0.00'
+  if (!accounts || !rates || !currency) return '0.00'
 
-  return accounts.value.reduce((agr, item) => {
+  return accounts.reduce((agr, item) => {
     const amountInEUR = parseFloat(item.balance) / rates[item.currency]
     const convertedAmount = amountInEUR * rates[currency]
 

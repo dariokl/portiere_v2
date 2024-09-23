@@ -30,6 +30,7 @@
           v-model="form.currency"
           :options="store.currencies"
           :rules="[(v) => Boolean(v) || 'Income Currency is required']"
+          :highlight-matched-text="false"
           label="Income Currency"
           placeholder="Select one..."
           class="w-1/2"
@@ -38,8 +39,10 @@
       </div>
       <VaSelect
         v-model="form.account"
-        :options="props.accounts"
+        :options="accounts"
+        :highlight-matched-text="false"
         track-by="id"
+        text-by="name"
         label="Income Account"
         placeholder="Select one..."
       />
@@ -68,9 +71,13 @@ import { useForm } from 'vuestic-ui'
 import { useCurrencyRates } from '@/stores/currencyRates'
 import { db } from '@/db'
 
-const props = defineProps({ accounts: { type: Array }, income: Object })
+const { accounts, income } = defineProps({
+  accounts: { type: Array, default: () => [] },
+  income: Object
+})
 
 const showModal = defineModel()
+
 const store = useCurrencyRates()
 const { validate, reset } = useForm('incomeForm')
 
@@ -82,20 +89,26 @@ const form = reactive({
 })
 
 watchEffect(() => {
-  form.amount = props?.income?.amount
-  form.currency = props?.income?.currency
-  form.account = props?.accounts?.find(({ id }) => id === props?.income?.accountId)
-  form.id = props?.income?.id
+  form.amount = income?.amount
+  form.currency = income?.currency
+  form.account = income?.account
+  form.id = income?.id
 })
 
 const submit = () => {
-  if (!props.income) {
-    db.income.add({ amount: form.amount, currency: form.currency, accountId: form.account.id })
-  } else {
-    db.income.update(props.income.id, {
+  console.log(form)
+
+  if (!income) {
+    db.income.add({
       amount: form.amount,
       currency: form.currency,
-      accountId: form.account.id
+      account: { ...form.account }
+    })
+  } else {
+    db.income.update(income.id, {
+      amount: form.amount,
+      currency: form.currency,
+      account: { ...form.account }
     })
   }
   reset()

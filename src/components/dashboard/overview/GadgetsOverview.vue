@@ -1,20 +1,19 @@
 <template>
   <div class="grid grid-cols-1 sm:grid-cols-6 gap-4 pt-2">
-    <TotalBalance />
-    <IncomeController />
-    <div
-      class="bg-emerald-600 flex justify-center items-center rounded-lg hover:shadow-lg hover:bg-emerald-600/90 transition ease-in delay-100 cursor-pointer"
-    >
-      <div class="flex flex-col items-center">
-        <VaIcon name="add_circle" color="#ffff" size="40px" />
-        <span class="text-white">Add Expense</span>
-      </div>
-    </div>
+    <TotalBalance :accounts="accounts" />
+    <IncomeModal :accounts="accounts" />
+    <ExpensesModal :accounts="accounts" />
   </div>
 </template>
 
 <script setup>
+import { db } from '@/db'
+import { useObservable } from '@vueuse/rxjs'
+import { liveQuery } from 'dexie'
+
 import TotalBalance from './TotalBalance.vue'
-import IncomeController from './IncomeController.vue'
-import HoverableIcon from '@/components/HoverableIcon.vue'
+import IncomeModal from './IncomeModal.vue'
+import ExpensesModal from './ExpensesModal.vue'
+
+const accounts = useObservable(liveQuery(() => db.accounts.toArray()))
 </script>

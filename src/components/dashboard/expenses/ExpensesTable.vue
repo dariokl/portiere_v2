@@ -1,61 +1,55 @@
 <template>
   <span class="text-xs block mt-6">Expenses</span>
   <VaDivider />
-  <VaDataTable :items="items" class="table bg-white shadow-lg rounded-lg text-xs p-4" />
+  <VaDataTable
+    :columns="[
+      { key: 'id', label: 'ID' },
+      { key: 'category', label: 'Category' },
+      { key: 'type', label: 'Type' },
+      { key: 'amount', label: 'Amount' },
+      { key: 'account', label: 'Account Name' },
+      { key: 'date', label: 'Transaction Date' },
+      { key: 'detail', label: 'Details' },
+      { key: 'actions', label: 'Actions' }
+    ]"
+    :items="expenses"
+    class="table bg-white shadow-lg rounded-lg text-xs p-4"
+  >
+    <template #cell(id)="{ rowIndex }">
+      {{ rowIndex + 1 }}
+    </template>
+    <template #cell(category)="{ value }">
+      <div class="flex gap-4 items-center">
+        <VaBadge
+          dot
+          :color="expenseCategories?.find(({ category }) => category === value)?.color || `primary`"
+          class="mt-2"
+        ></VaBadge>
+        {{ value }}
+      </div>
+    </template>
+    <template #cell(type)="{ source }">
+      {{ source.text }}
+    </template>
+    <template #cell(amount)="{ rowData, value }">
+      {{ useBalanceToCurrency(rowData.account.currency, value) }}
+    </template>
+    <template #cell(account)="{ source }">
+      {{ source.name }}
+    </template>
+    <template #cell(actions)="{ rowIndex }">
+      <VaButton preset="plain" icon="delete" class="ml-3" color="danger" />
+    </template>
+  </VaDataTable>
 </template>
-<script>
-import { defineComponent } from 'vue'
+<script setup>
+import { useBalanceToCurrency } from '@/composables/useCurrency'
+import { expenseCategories } from '@/constants/expenseOptions'
+import { db } from '@/db'
+import { useObservable } from '@vueuse/rxjs'
+import { liveQuery } from 'dexie'
 
-export default defineComponent({
-  data() {
-    const items = [
-      {
-        id: 1,
-        name: 'Leanne Graham',
-        username: 'Bret',
-        email: 'Sincere@april.biz',
-        phone: '1-770-736-8031 x56442',
-        website: 'hildegard.org'
-      },
-      {
-        id: 2,
-        name: 'Ervin Howell',
-        username: 'Antonette',
-        email: 'Shanna@melissa.tv',
-        phone: '010-692-6593 x09125',
-        website: 'anastasia.net'
-      },
-      {
-        id: 3,
-        name: 'Clementine Bauch',
-        username: 'Samantha',
-        email: 'Nathan@yesenia.net',
-        phone: '1-463-123-4447',
-        website: 'ramiro.info'
-      },
-      {
-        id: 4,
-        name: 'Patricia Lebsack',
-        username: 'Karianne',
-        email: 'Julianne.OConner@kory.org',
-        phone: '493-170-9623 x156',
-        website: 'kale.biz'
-      },
-      {
-        id: 5,
-        name: 'Chelsey Dietrich',
-        username: 'Kamren',
-        email: 'Lucio_Hettinger@annie.ca',
-        phone: '(254)954-1289',
-        website: 'demarco.info'
-      }
-    ]
-
-    return {
-      items
-    }
-  }
-})
+const expenses = useObservable(liveQuery(() => db.expenses.toArray()))
 </script>
 
 <style scoped>
