@@ -1,7 +1,7 @@
 <template>
   <div
     @click="showModal = !showModal"
-    class="flex justify-center items-center rounded-lg nhover:bg-gray-200 hover:shadow-md transition ease-in delay-100 cursor-pointer"
+    class="flex justify-center items-center rounded-lg hover:bg-gray-200 hover:shadow-md transition ease-in delay-100 cursor-pointer"
   >
     <div class="flex flex-col items-center">
       <VaIcon name="add_circle" color="primary" size="40px" />

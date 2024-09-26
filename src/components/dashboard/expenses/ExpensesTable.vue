@@ -58,15 +58,10 @@ import { liveQuery } from 'dexie'
 const expenses = useObservable(liveQuery(() => db.expenses.toArray()))
 
 const removeExpense = async ({ source }) => {
-  console.log(source)
   try {
-    const success = await db.expenses.delete(row.id)
-
-    console.log(row.account)
-    db.account.update(row.account.id, {
-      ...row,
-      balance: parseFloat(row.account.balance) + parseFloat(row.amount)
-    })
+    const account = await db.accounts.get(source.account.id)
+    await db.accounts.update(account.id, {...account, balance: parseFloat(source.amount) + parseFloat(account.balance)})
+    await db.expenses.delete(source.id)
   } catch (err) {
     console.error(err)
   }

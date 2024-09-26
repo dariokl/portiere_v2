@@ -5,6 +5,7 @@
       <AccountsOverview />
       <GadgetsOverview />
       <ExpensesTable />
+
     </div>
   </main>
 </template>

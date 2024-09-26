@@ -12,10 +12,12 @@
   },
   "dependencies": {
     "@vueuse/rxjs": "^11.0.3",
+    "chart.js": "^4.4.4",
     "dexie": "^4.0.8",
     "pinia": "^2.1.7",
     "rxjs": "^7.8.1",
     "vue": "^3.4.29",
+    "vue-chartjs": "^5.3.1",
     "vue-router": "^4.3.3",
     "vuestic-ui": "^1.10.0"
   },

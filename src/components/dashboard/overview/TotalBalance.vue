@@ -7,8 +7,8 @@
           <span class="block mt-2">Total Balance</span>
         </div>
 
-        <div class="flex w-[72px]">
-          <VaSelect v-model="currency" :options="currencies" />
+        <div class="flex w-[68px] text-xs overflow-hidden">
+          <VaSelect v-model="currency" :options="currencies" class="currency-select"/>
         </div>
       </div>
     </VaCardTitle>
@@ -26,8 +26,10 @@
 <script setup>
 import { computed, ref, watchEffect } from 'vue'
 import { useCurrencyRates } from '@/stores/currencyRates'
-import HoverableIcon from '../../HoverableIcon.vue'
 import { balanceToCurrency, totalBalanceCalculator } from '@/utils/currency.utils'
+
+import HoverableIcon from '@/components/HoverableIcon.vue';
+
 
 const { accounts } = defineProps({
   accounts: {
@@ -37,10 +39,9 @@ const { accounts } = defineProps({
 })
 
 const currency = ref('EUR')
-
 const store = useCurrencyRates()
 
-const currencies = computed(() => accounts.map((account) => account.currency) || [])
+const currencies = computed(() => [...new Set(accounts.map(account => account.currency))])
 
 const totalBalance = computed(() => {
   const balance = totalBalanceCalculator(accounts, store.rates, currency.value)
@@ -48,8 +49,15 @@ const totalBalance = computed(() => {
 })
 
 watchEffect(() => {
-  if (currencies.value.length && !currencies.value.includes(currency.value)) {
-    currency.value = currencies.value[0]
+  if (accounts.length && currencies.value.length && !currencies.value.includes(currency.value)) {
+    currency.value = currencies.value[0] || 'EUR'  // Fallback to 'EUR' if no valid currency
   }
 })
 </script>
+
+
+<style scoped>
+:deep(.va-select__toggle-icon) {
+  color: white !important;
+}
+</style>
