@@ -51,6 +51,9 @@ export const useCurrencyRates = defineStore('currency-rates', {
         return state.data.rates
       }
       return []
+    },
+    isLoading(state) {
+      return state.loading
     }
   }
 })

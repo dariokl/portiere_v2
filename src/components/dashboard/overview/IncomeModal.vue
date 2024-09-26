@@ -26,9 +26,7 @@
           <VaIcon name="add_circle" color="#0d9488" size="28px" @click="showModal = !showModal" />
         </div>
         <div v-else class="flex flex-col items-start">
-          <span class="block">{{
-            useBalanceToCurrency(income.account.currency, income.amount)
-          }}</span>
+          <span class="block">{{ balanceToCurrency(income.currency, income.amount) }}</span>
           <span class="text-black text-xs text-gray-500"> Account : {{ income.account.name }}</span>
         </div>
       </div>
@@ -44,7 +42,7 @@ import { db } from '@/db'
 import { ref } from 'vue'
 import HoverableIcon from '../../HoverableIcon.vue'
 import IncomeModalForm from './IncomeModalForm.vue'
-import { useBalanceToCurrency } from '@/composables/useCurrency'
+import { balanceToCurrency } from '@/utils/currency.utils'
 
 const showModal = ref(false)
 

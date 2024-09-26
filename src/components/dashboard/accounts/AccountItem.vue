@@ -26,7 +26,7 @@
         className="bg-gray-200/70 shadow-lg h-20 w-full rounded-lg flex flex-col justify-center items-start"
       >
         <p className="text-xs font-extrabold pl-4 mb-2">Balance amount</p>
-        <p className="font-extrabold pl-4">{{ useBalanceToCurrency(currency, balance) }}</p>
+        <p className="font-extrabold pl-4">{{ balanceToCurrency(currency, balance) }}</p>
       </div>
     </VaCardContent>
     <AccountModalForm
@@ -39,7 +39,7 @@
 <script setup>
 import { ref } from 'vue'
 import { db } from '@/db'
-import { useBalanceToCurrency } from '@/composables/useCurrency'
+import { balanceToCurrency } from '@/utils/currency.utils'
 import { useModal } from 'vuestic-ui'
 
 import HoverableIcon from '../../HoverableIcon.vue'

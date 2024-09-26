@@ -32,24 +32,45 @@
       {{ source.text }}
     </template>
     <template #cell(amount)="{ rowData, value }">
-      {{ useBalanceToCurrency(rowData.account.currency, value) }}
+      {{ balanceToCurrency(rowData.account.currency, value) }}
     </template>
     <template #cell(account)="{ source }">
       {{ source.name }}
     </template>
-    <template #cell(actions)="{ rowIndex }">
-      <VaButton preset="plain" icon="delete" class="ml-3" color="danger" />
+    <template #cell(actions)="{ row }">
+      <VaButton
+        preset="plain"
+        icon="delete"
+        class="ml-3 shadow-md"
+        color="danger"
+        @click="removeExpense(row)"
+      />
     </template>
   </VaDataTable>
 </template>
 <script setup>
-import { useBalanceToCurrency } from '@/composables/useCurrency'
+import { balanceToCurrency } from '@/utils/currency.utils'
 import { expenseCategories } from '@/constants/expenseOptions'
 import { db } from '@/db'
 import { useObservable } from '@vueuse/rxjs'
 import { liveQuery } from 'dexie'
 
 const expenses = useObservable(liveQuery(() => db.expenses.toArray()))
+
+const removeExpense = async ({ source }) => {
+  console.log(source)
+  try {
+    const success = await db.expenses.delete(row.id)
+
+    console.log(row.account)
+    db.account.update(row.account.id, {
+      ...row,
+      balance: parseFloat(row.account.balance) + parseFloat(row.amount)
+    })
+  } catch (err) {
+    console.error(err)
+  }
+}
 </script>
 
 <style scoped>

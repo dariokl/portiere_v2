@@ -116,6 +116,11 @@ const submit = () => {
     account: { ...form.account },
     date: new Date().toDateString()
   })
+
+  db.accounts.update(form.account.id, {
+    ...form.account,
+    balance: parseFloat(form.account.balance) - parseFloat(form.amount)
+  })
   reset()
   showModal.value = !showModal.value
 }

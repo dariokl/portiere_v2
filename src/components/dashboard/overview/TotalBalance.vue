@@ -26,8 +26,8 @@
 <script setup>
 import { computed, ref, watchEffect } from 'vue'
 import { useCurrencyRates } from '@/stores/currencyRates'
-import { useTotalBalanceCalculation, useBalanceToCurrency } from '@/composables/useCurrency'
 import HoverableIcon from '../../HoverableIcon.vue'
+import { balanceToCurrency, totalBalanceCalculator } from '@/utils/currency.utils'
 
 const { accounts } = defineProps({
   accounts: {
@@ -43,8 +43,8 @@ const store = useCurrencyRates()
 const currencies = computed(() => accounts.map((account) => account.currency) || [])
 
 const totalBalance = computed(() => {
-  const balance = useTotalBalanceCalculation(accounts, store.rates, currency.value)
-  return useBalanceToCurrency(currency.value, balance)
+  const balance = totalBalanceCalculator(accounts, store.rates, currency.value)
+  return balanceToCurrency(currency.value, balance)
 })
 
 watchEffect(() => {

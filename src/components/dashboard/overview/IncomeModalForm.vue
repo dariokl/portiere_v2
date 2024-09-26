@@ -69,6 +69,7 @@
 import { reactive, watchEffect } from 'vue'
 import { useForm } from 'vuestic-ui'
 import { useCurrencyRates } from '@/stores/currencyRates'
+import { getFirstDayOfNextMonth } from '@/utils/useDates'
 import { db } from '@/db'
 
 const { accounts, income } = defineProps({
@@ -82,33 +83,35 @@ const store = useCurrencyRates()
 const { validate, reset } = useForm('incomeForm')
 
 const form = reactive({
+  id: '',
   amount: '',
   currency: '',
   account: '',
-  id: ''
+  payDate: ''
 })
 
 watchEffect(() => {
+  form.id = income?.id
   form.amount = income?.amount
   form.currency = income?.currency
   form.account = income?.account
-  form.id = income?.id
+  form.payDate = income?.payDate
 })
 
 const submit = () => {
-  console.log(form)
-
   if (!income) {
     db.income.add({
       amount: form.amount,
       currency: form.currency,
-      account: { ...form.account }
+      account: { ...form.account },
+      payDate: getFirstDayOfNextMonth()
     })
   } else {
     db.income.update(income.id, {
       amount: form.amount,
       currency: form.currency,
-      account: { ...form.account }
+      account: { ...form.account },
+      payDate: form.payDate
     })
   }
   reset()
