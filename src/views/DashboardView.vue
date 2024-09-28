@@ -5,7 +5,6 @@
       <AccountsOverview />
       <GadgetsOverview />
       <ExpensesTable />
-
     </div>
   </main>
 </template>
@@ -19,6 +18,7 @@ import PageLoading from '@/components/PageLoading.vue'
 import GadgetsOverview from '@/components/dashboard/overview/GadgetsOverview.vue'
 import ExpensesTable from '@/components/dashboard/expenses/ExpensesTable.vue'
 import { getFirstDayOfNextMonth } from '@/utils/useDates'
+
 const store = useCurrencyRates()
 
 const updateIncomeBalance = async (income, rates) => {

@@ -1,15 +1,16 @@
 <template>
-  <span class="text-xs block mt-6">Expenses</span>
+  <span class="text-xs block mt-6">Expenses & Transactions</span>
   <VaDivider />
   <VaDataTable
+    hoverable
     :columns="[
       { key: 'id', label: 'ID' },
       { key: 'category', label: 'Category' },
       { key: 'type', label: 'Type' },
       { key: 'amount', label: 'Amount' },
-      { key: 'account', label: 'Account Name' },
+      { key: 'account', label: 'Account' },
       { key: 'date', label: 'Transaction Date' },
-      { key: 'detail', label: 'Details' },
+      { key: 'detail', label: 'Details', width: '200px' },
       { key: 'actions', label: 'Actions' }
     ]"
     :items="expenses"
@@ -32,17 +33,32 @@
       {{ source.text }}
     </template>
     <template #cell(amount)="{ rowData, value }">
-      {{ balanceToCurrency(rowData.account.currency, value) }}
+      <span class="text-red-500 font-bold">
+        {{ rowData.account && '-' }}
+        {{ balanceToCurrency(rowData.account.currency, value) }}
+      </span>
     </template>
     <template #cell(account)="{ source }">
-      {{ source.name }}
+      <span class="flex gap-2 items-center">
+        <VaIcon
+          :name="accountTypesMap[source.type.toLowerCase()].icon"
+          :color="accountTypesMap[source.type.toLowerCase()].color"
+        />
+        {{ source.name }}
+      </span>
+    </template>
+    <template #cell(detail)="{ value }">
+      <div class="truncate cursor-pointer" :title="value.length > 29 ? value : ''">
+        {{ value === '' ? 'No details ...' : value }}
+      </div>
     </template>
     <template #cell(actions)="{ row }">
       <VaButton
-        preset="plain"
+        round
+        size="small"
         icon="delete"
-        class="ml-3 shadow-md"
-        color="danger"
+        class="ml-2 shadow-md hover:bg-emerald-500 transaition ease-in delay-100"
+        color="primary"
         @click="removeExpense(row)"
       />
     </template>
@@ -54,13 +70,17 @@ import { expenseCategories } from '@/constants/expenseOptions'
 import { db } from '@/db'
 import { useObservable } from '@vueuse/rxjs'
 import { liveQuery } from 'dexie'
+import { accountTypesMap } from '@/constants/accountTypes'
 
 const expenses = useObservable(liveQuery(() => db.expenses.toArray()))
 
 const removeExpense = async ({ source }) => {
   try {
     const account = await db.accounts.get(source.account.id)
-    await db.accounts.update(account.id, {...account, balance: parseFloat(source.amount) + parseFloat(account.balance)})
+    await db.accounts.update(account.id, {
+      ...account,
+      balance: parseFloat(source.amount) + parseFloat(account.balance)
+    })
     await db.expenses.delete(source.id)
   } catch (err) {
     console.error(err)
@@ -70,11 +90,11 @@ const removeExpense = async ({ source }) => {
 
 <style scoped>
 .table ::v-deep(thead) {
-  border-bottom: 0.1px dashed var(--va-secondary) !important;
+  border-bottom: 0.1px dashed gainsboro !important;
 }
 
 .table ::v-deep(tbody tr) {
-  border-bottom: 0.1px dashed var(--va-secondary);
+  border-bottom: 0.1px dashed gainsboro;
 }
 
 .table ::v-deep(tbody td) {

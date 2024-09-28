@@ -33,6 +33,14 @@ export const expenseCategories = [
     ]
   },
   {
+    category: 'Financial Expenses',
+    color: '#8b5cf6', // gray-500
+    expenses: [
+      { id: 'taxes', text: 'Taxes' },
+      { id: 'legalFees', text: 'Legal Fees' },
+    ]
+  },
+  {
     category: 'Health & Wellness',
     color: '#ef4444', // red-500
     expenses: [
@@ -99,8 +107,7 @@ export const expenseCategories = [
     color: '#6b7280', // gray-500
     expenses: [
       { id: 'pets', text: 'Pet Care' },
-      { id: 'legalFees', text: 'Legal Fees' },
       { id: 'miscellaneous', text: 'Miscellaneous' }
     ]
-  }
+  },
 ]

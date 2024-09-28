@@ -41,6 +41,7 @@ import { ref } from 'vue'
 import { db } from '@/db'
 import { balanceToCurrency } from '@/utils/currency.utils'
 import { useModal } from 'vuestic-ui'
+import { accountTypesMap } from '@/constants/accountTypes'
 
 import HoverableIcon from '../../HoverableIcon.vue'
 import AccountModalForm from './AccountModalForm.vue'
@@ -48,24 +49,7 @@ import AccountModalForm from './AccountModalForm.vue'
 const showModal = ref(false)
 const { confirm } = useModal()
 
-const accountTypesMap = {
-  bank: {
-    icon: 'account_balance',
-    color: '#10b981'
-  },
-  card: {
-    icon: 'credit_card',
-    color: '#60a5fa'
-  },
-  cash: {
-    icon: 'attach_money',
-    color: '#fb923c'
-  },
-  savings: {
-    icon: 'savings',
-    color: '#fb7185'
-  }
-}
+
 
 const { id, name, number, currency, balance, type } = defineProps([
   'id',
