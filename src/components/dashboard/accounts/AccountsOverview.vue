@@ -1,6 +1,6 @@
 <template>
   <div class="mt-6 mb-6">
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+    <div class="grid grid-cols-1 sm:grid-cols-6 gap-4 pt-2">
       <AccountItem
         v-for="account in accounts"
         :key="account.id"

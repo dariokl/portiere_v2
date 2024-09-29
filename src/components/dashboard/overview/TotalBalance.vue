@@ -35,7 +35,7 @@ const { accounts } = defineProps({
     default: () => []
   }
 })
-console.log('render')
+
 const currency = ref('EUR')
 const percentage = reactive({ value: '0', icon: 'trending_flat', color: 'secondary' })
 const currencies = computed(() => [...new Set(accounts.map((account) => account.currency))])

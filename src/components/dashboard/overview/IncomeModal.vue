@@ -27,7 +27,7 @@
         </div>
         <div v-else class="flex flex-col items-start">
           <span class="block">{{ balanceToCurrency(income.currency, income.amount) }}</span>
-          <span class="text-black text-xs text-gray-500"> Account : {{ income.account.name }}</span>
+          <span class="text-xs text-gray-500"> Account : {{ income.account.name }}</span>
         </div>
       </div>
     </VaCardContent>

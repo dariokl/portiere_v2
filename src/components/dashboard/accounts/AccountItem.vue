@@ -10,14 +10,15 @@
           />
           <span>{{ name }}</span>
         </div>
-        <div class="flex items-center gap-2">
-          <HoverableIcon
-            icon-name="edit"
-            hover-bg-color="#10b981"
-            @click="showModal = !showModal"
+        <VaButtonDropdown preset="secondary" size="small" round>
+          <VaMenuList
+            :options="[
+              { id: '0', text: 'Edit', value: 'two', icon: 'edit'},
+              { id: '1', text: 'Delete', value: 'one', icon: 'delete', iconColor: 'red' },
+            ]"
+            @selected="(v) => v.id == 0 ? showModal = !showModal : handleDelete() "
           />
-          <HoverableIcon icon-name="delete" hover-bg-color="#ef4444" @click="handleDelete" />
-        </div>
+        </VaButtonDropdown>
       </div>
     </VaCardTitle>
     <VaCardContent>
@@ -48,8 +49,6 @@ import AccountModalForm from './AccountModalForm.vue'
 
 const showModal = ref(false)
 const { confirm } = useModal()
-
-
 
 const { id, name, number, currency, balance, type } = defineProps([
   'id',

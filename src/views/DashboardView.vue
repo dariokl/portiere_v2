@@ -4,27 +4,44 @@
     <div v-else>
       <AccountsOverview />
       <GadgetsOverview />
-      <ExpensesTable />
+      <VaTabs v-model="tabVal" class="mt-4 mb-2">
+        <template #tabs>
+          <VaTab
+            class="text-xs"
+            v-for="tab in ['Expenses & Transactions', 'Total Balance Chart', 'Expenses Chart']"
+            :key="tab"
+          >
+            {{ tab }}
+          </VaTab>
+        </template>
+      </VaTabs>
+      <ExpensesTable v-if="tabVal === 0"/>
+      <TotalBalanceChart v-if='tabVal === 1' />
+
     </div>
   </main>
 </template>
 
 <script setup>
-import { onMounted, watch } from 'vue'
+import { onMounted, watch, ref } from 'vue'
 import { useCurrencyRates } from '@/stores/currencyRates'
 import { db } from '@/db'
+import { getFirstDayOfNextMonth } from '@/utils/useDates'
+
 import AccountsOverview from '@/components/dashboard/accounts/AccountsOverview.vue'
 import PageLoading from '@/components/PageLoading.vue'
 import GadgetsOverview from '@/components/dashboard/overview/GadgetsOverview.vue'
-import ExpensesTable from '@/components/dashboard/expenses/ExpensesTable.vue'
-import { getFirstDayOfNextMonth } from '@/utils/useDates'
+import ExpensesTable from '@/components/dashboard/tables/ExpensesTable.vue'
+import TotalBalanceChart from '@/components/dashboard/charts/TotalBalanceChart.vue'
 
 const store = useCurrencyRates()
+const tabVal = ref(0)
 
 const updateIncomeBalance = async (income, rates) => {
   const now = new Date()
 
   if (now > new Date(income.payDate)) {
+    console.log('payDate')
     const incomeCurrency = income.currency
     const accountCurrency = income.account.currency
 

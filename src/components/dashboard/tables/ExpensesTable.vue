@@ -1,20 +1,18 @@
 <template>
-  <span class="text-xs block mt-6">Expenses & Transactions</span>
-  <VaDivider />
   <VaDataTable
     hoverable
     :columns="[
       { key: 'id', label: 'ID' },
-      { key: 'category', label: 'Category' },
+      { key: 'category', label: 'Category', sortable: true },
       { key: 'type', label: 'Type' },
-      { key: 'amount', label: 'Amount' },
+      { key: 'amount', label: 'Amount', sortable: true, sortingOptions: ['desc', 'asc'] },
       { key: 'account', label: 'Account' },
-      { key: 'date', label: 'Transaction Date' },
+      { key: 'date', label: 'Transaction Date', sortable: true },
       { key: 'detail', label: 'Details', width: '200px' },
       { key: 'actions', label: 'Actions' }
     ]"
     :items="expenses"
-    class="table bg-white shadow-lg rounded-lg text-xs p-4"
+    class="table relative bg-white shadow-lg rounded-lg text-xs p-4"
   >
     <template #cell(id)="{ rowIndex }">
       {{ rowIndex + 1 }}
@@ -62,17 +60,51 @@
         @click="removeExpense(row)"
       />
     </template>
+    <template #bodyAppend v-if="pagination.totalPages > 1">
+      <tr>
+        <td colspan="8">
+          <div class="flex justify-center mt-4">
+            <VaPagination
+              v-model="pagination.currentPage"
+              :pages="pagination.totalPages"
+            />
+          </div>
+        </td>
+      </tr>
+    </template>
   </VaDataTable>
 </template>
 <script setup>
+import { reactive } from 'vue'
 import { balanceToCurrency } from '@/utils/currency.utils'
 import { expenseCategories } from '@/constants/expenseOptions'
 import { db } from '@/db'
-import { useObservable } from '@vueuse/rxjs'
-import { liveQuery } from 'dexie'
 import { accountTypesMap } from '@/constants/accountTypes'
+import useLiveQuery from '@/composables/useLiveQuery'
 
-const expenses = useObservable(liveQuery(() => db.expenses.toArray()))
+
+const pagination = reactive({
+  currentPage: 1,
+  itemsPerPage: 20,
+  totalPages: 0
+})
+
+const getOffset = () => (pagination.currentPage - 1) * pagination.itemsPerPage
+
+const expenses = useLiveQuery(async () => {
+  const offset = getOffset()
+  const expensesList = await db.expenses
+    .offset(offset)
+    .limit(pagination.itemsPerPage)
+    .toArray()
+
+  const totalExpenses = await db.expenses.count()
+
+  pagination.hasNextPage = totalExpenses > offset + pagination.itemsPerPage
+  pagination.totalPages = Math.ceil(totalExpenses / pagination.itemsPerPage)
+
+  return expensesList
+}, [pagination])
 
 const removeExpense = async ({ source }) => {
   try {
@@ -95,6 +127,10 @@ const removeExpense = async ({ source }) => {
 
 .table ::v-deep(tbody tr) {
   border-bottom: 0.1px dashed gainsboro;
+}
+
+.table ::v-deep(tbody :last-child) {
+  border-bottom: white
 }
 
 .table ::v-deep(tbody td) {
