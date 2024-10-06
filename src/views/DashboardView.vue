@@ -41,7 +41,6 @@ const updateIncomeBalance = async (income, rates) => {
   const now = new Date()
 
   if (now > new Date(income.payDate)) {
-    console.log('payDate')
     const incomeCurrency = income.currency
     const accountCurrency = income.account.currency
 

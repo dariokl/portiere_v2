@@ -86,9 +86,12 @@
 <script setup>
 import { reactive, computed } from 'vue'
 import { useForm } from 'vuestic-ui'
+import { useCurrencyRates } from '@/stores/currencyRates'
 import { expenseCategories } from '@/constants/expenseOptions'
+import { totalBalanceCalculator } from '@/utils/currency.utils'
 import { db } from '@/db'
 
+const store = useCurrencyRates()
 const showModal = defineModel()
 const { accounts } = defineProps({ accounts: { type: Array, default: () => [] } })
 
@@ -109,23 +112,38 @@ const form = reactive({
   detail: ''
 })
 
-const submit = () => {
-  db.expenses.add({
+const submit = async () => {
+  await db.expenses.add({
     ...form,
     type: { ...form.type },
     account: { ...form.account },
     date: new Date().toDateString()
   })
 
-  db.accounts.update(form.account.id, {
+  await db.accounts.update(form.account.id, {
     ...form.account,
     balance: parseFloat(form.account.balance) - parseFloat(form.amount)
   })
+
+  checkAndUpdateBalance()
   reset()
   showModal.value = !showModal.value
 }
 
 const handleClose = () => {
   showModal.value = !showModal.value
+}
+
+const checkAndUpdateBalance = async () => {
+  const lastRecord = await db.totalBalance.orderBy('date').last()
+  const oneDayAgo = new Date()
+  oneDayAgo.setDate(oneDayAgo.getDate() - 1)
+
+  if (!lastRecord || new Date(lastRecord.date) < oneDayAgo) {
+    await db.totalBalance.add({
+      date: new Date(),
+      amount: totalBalanceCalculator(accounts, store.rates, 'EUR')
+    })
+  }
 }
 </script>

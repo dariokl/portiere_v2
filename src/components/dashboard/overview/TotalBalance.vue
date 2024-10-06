@@ -22,7 +22,7 @@
 </template>
 
 <script setup>
-import { computed, ref, watchEffect, onMounted, reactive } from 'vue'
+import { computed, ref, onMounted, reactive } from 'vue'
 import { useCurrencyRates } from '@/stores/currencyRates'
 import { balanceToCurrency, totalBalanceCalculator } from '@/utils/currency.utils'
 import { db } from '@/db'
@@ -50,7 +50,7 @@ const percentageChange = async () => {
   const records = await db.totalBalance.orderBy('date').toArray()
 
   if (records.length > 1) {
-    const firstRecord = records.find(({amount}) => parseFloat(amount) > 0)
+    const firstRecord = records.find(({ amount }) => parseFloat(amount) > 0)
     const lastRecord = records[records.length - 1]
 
     const change = ((lastRecord.amount - firstRecord.amount) / firstRecord.amount) * 100
@@ -64,29 +64,8 @@ const percentageChange = async () => {
   }
 }
 
-const checkAndUpdateBalance = async () => {
-  const lastRecord = await db.totalBalance.orderBy('date').last()
-
-  const oneDayAgo = new Date()
-  oneDayAgo.setDate(oneDayAgo.getDate() - 1)
-
-  if (!lastRecord || new Date(lastRecord.date) < oneDayAgo) {
-    await db.totalBalance.add({
-      date: new Date(),
-      amount: totalBalanceCalculator(accounts, store.rates, 'EUR')
-    })
-  }
-}
-
 onMounted(() => {
   percentageChange()
-})
-
-watchEffect(() => {
-  if (accounts.length && currencies.value.length && !currencies.value.includes(currency.value)) {
-    currency.value = currencies.value[0] || 'EUR'
-  }
-  checkAndUpdateBalance()
 })
 </script>
 
