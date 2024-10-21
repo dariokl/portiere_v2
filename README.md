@@ -1,35 +1,20 @@
-# finance
+# Portiere Finance Dashboard
 
-This template should help get you started developing with Vue 3 in Vite.
+A simple finance dashboard application that keeps track of users' bank accounts, total balance in different currencies, and transactions. This app uses **IndexedDB** to store all data locally in the browser.
 
-## Recommended IDE Setup
+## Features
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+- **Track multiple bank accounts**: Manage accounts with different currencies.
+- **Transactions management**: Add, delete transactions for each account.
+- **Total balance calculation**: Automatically calculates the total balance for all accounts, handling multiple currencies.
+- **Currency conversion**: Supports conversion between different currencies based on real-time or preset conversion rates.
+- **Local storage with IndexedDB**: All data is stored locally in the browser using IndexedDB, ensuring persistence across sessions without relying on external databases.
 
-## Customize configuration
+<img src='./src//assets/portiere.png'>
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+## TODO
 
-## Project Setup
-
-```sh
-npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```
+- **Monltyh budget feature**
+- **Expnses chart feature**
+- **Address existng bugs**
+- **Testing**
